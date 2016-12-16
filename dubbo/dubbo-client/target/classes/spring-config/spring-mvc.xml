@@ -12,6 +12,7 @@
 		    
     <!-- 处理器映射器  默认的注解映射的支持  方法一 -->
     <mvc:annotation-driven />
+    
     <!-- 注解控测器-->
     <context:component-scan base-package="com.cyh.*">
     	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
