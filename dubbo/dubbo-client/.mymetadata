@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="dubbo-client"
+  id="myeclipse.1475245679202"
+  context-root="/dubbo-client"
+  j2ee-spec="1.7"
+  archive="dubbo-client.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+                        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd  
+                        http://www.springframework.org/schema/context  
+                        http://www.springframework.org/schema/context/spring-context-4.1.xsd  
+                        http://www.springframework.org/schema/mvc  
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+                        http://www.springframework.org/schema/tx
+						http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+						http://www.springframework.org/schema/aop
+						http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+						http://www.springframework.org/schema/task 
+						http://www.springframework.org/schema/task/spring-task-4.1.xsd">
+                           
+	<!-- 加载数据库参数 -->
+	<context:property-placeholder location="classpath:config.properties"/>  
+	
+	<!-- 配置DataSource数据源 -->  
+	<!-- 阿里 druid 数据库连接池 -->
+    <bean id = "dataSource" class = "com.alibaba.druid.pool.DruidDataSource" destroy-method = "close">  
+         <!-- 数据库基本信息配置 -->
+         <property name = "url" value = "${druid.url}" />  
+         <property name = "username" value = "${druid.username}" />  
+         <property name = "password" value = "${druid.password}" />  
+         <property name = "driverClassName" value = "${druid.driverClassName}" />  
+         <property name = "filters" value = "${druid.filters}" />  
+
+         <!-- 最大并发连接数 -->
+         <property name = "maxActive" value = "${druid.maxActive}" />
+
+         <!-- 初始化连接数量 -->
+         <property name = "initialSize" value = "${druid.initialSize}" />
+
+         <!-- 配置获取连接等待超时的时间 -->
+         <property name = "maxWait" value = "${druid.maxWait}" />
+
+         <!-- 最小空闲连接数 -->
+         <property name = "minIdle" value = "${druid.minIdle}" />  
+
+         <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+         <property name = "timeBetweenEvictionRunsMillis" value ="${druid.timeBetweenEvictionRunsMillis}" />
+
+         <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+         <property name = "minEvictableIdleTimeMillis" value ="${druid.minEvictableIdleTimeMillis}" />  
+         <property name = "validationQuery" value = "${druid.validationQuery}" />  
+         <property name = "testWhileIdle" value = "${druid.testWhileIdle}" />  
+         <property name = "testOnBorrow" value = "${druid.testOnBorrow}" />  
+         <property name = "testOnReturn" value = "${druid.testOnReturn}" />  
+         <property name = "maxOpenPreparedStatements" value ="${druid.maxOpenPreparedStatements}" />
+
+         <!-- 打开 removeAbandoned 功能 -->
+         <property name = "removeAbandoned" value = "${druid.removeAbandoned}" />
+         
+         <!-- 1800 秒，也就是 30 分钟 -->
+         <property name = "removeAbandonedTimeout" value ="${druid.removeAbandonedTimeout}" />
+
+         <!-- 关闭 abanded 连接时输出错误日志 -->   
+         <property name = "logAbandoned" value = "${druid.logAbandoned}" />
+    </bean>
+	
+	<!-- 配置SqlSessionFactoryBean --> 
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+	   	<property name="dataSource" ref="dataSource"/>  
+	   	<property name="configLocation" value="classpath:mybatis-config/mybatis-config.xml"/> 
+	   	<!-- mapper和resultmap配置路径   -->
+	   	<property name="mapperLocations" value="classpath:mybatis-config/mapper/*-mapper.xml"></property> 
+	</bean>
+	
+	<!-- 通过扫描的模式，扫描在com.cyh.sy.dao.mapper目录下的所有mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+	   	<property name="basePackage" value="com.cyh.sy.dao"/>  
+	</bean>
+	 
+
+    <!-- 任务执行定时器，启动注解任务
+	<task:annotation-driven /> 
+    -->
+      
+    <!-- 创建一个sqlSession实例，线程安全的，可以在所有DAO实例共享，原理是将sqlSession，事务与当前线程挂钩 -->
+	<bean name="sqlSessionTemplateASS" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 事务相关控制 -->
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    
+    <!-- 通知 -->
+    <tx:advice id="tx" transaction-manager="transactionManager">
+        <tx:attributes>
+        	<tx:method name="add*" propagation="REQUIRED" />
+            <tx:method name="edit*" propagation="REQUIRED" />
+            <tx:method name="remove*" propagation="REQUIRED" />
+            <tx:method name="find*" read-only="true" />
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="select*" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+    	<!--把事务控制在Service层-->
+        <aop:pointcut id="pc" expression="execution(* com.cyh.sy.service.*.*(..))" />
+        <aop:advisor pointcut-ref="pc" advice-ref="tx" />
+    </aop:config>
+    
+	
+	<!-- 启用注解扫描 -->
+	<context:component-scan base-package="com.cyh.*">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+     
+</beans>

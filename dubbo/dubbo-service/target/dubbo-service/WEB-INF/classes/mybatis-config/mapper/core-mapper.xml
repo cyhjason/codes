@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper   
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"   
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.cyh.core.dao.Dao">
+    <!-- 局部新增 -->
+    <insert id="addLocal">
+        ${value}
+    </insert>
+ 
+    <!-- 整体新增 -->
+    <insert id="add">
+        ${value}
+    </insert>
+    
+    <!-- 根据ID查询单个 -->
+    <select id="getById" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 根据ID查询单个字段 -->
+    <select id="getFieldById" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 根据条件查询单个 -->
+    <select id="getByParm" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 根据条件查询单个字段 -->
+    <select id="getFieldByParm" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 查询所有列表 -->
+    <select id="selectAllList" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 条件查询列表 -->
+    <select id="selectList" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 条件查询字段列表 -->
+    <select id="selectListField" resultType="hashmap">
+        ${value}
+    </select>
+    
+   	<!-- 更新局部 -->
+    <update id="updateLocal">${value}</update>
+    
+    <!-- 更新全部 -->
+    <update id="update">${value}</update>
+    
+    <!-- 条件更新局部 -->
+    <update id="updateLocalByPram">${value}</update>
+    
+    <!-- 条件更新全部 -->
+    <update id="updateByPram">${value}</update>
+    
+ 
+    <!-- 根据ID删除 -->
+    <delete id="deleteById">
+        ${value}
+    </delete>
+ 
+    <!-- 批量删除 -->
+    <delete id="deleteByparm">
+        ${value}
+    </delete>
+    
+    <!-- 自定义语句查询 -->
+    <select id="selectBySql" resultType="hashmap">
+        ${value}
+    </select>
+    
+    <!-- 自定义语句执行 -->
+    <update id="excuse">${value}</update>
+    
+    
+    <!-- 查询符合条件的数量 -->
+    <select id="selectCountByParm" resultType="Long">
+        ${value}
+    </select>
+ 
+ 
+    <!-- 查询总数量 -->
+    <select id="selectCount" resultType="Long">
+        ${value}
+    </select>
+    
+    <!-- 内查询 -->
+    <select id="selectIn" resultType="hashmap">
+        ${value}
+    </select>
+     
+    <!-- 获取下一个序列的值 -->
+    <select id="fetchSeqNextval" resultType="Long" flushCache="true">
+        ${value}
+    </select>
+</mapper>

@@ -1,0 +1,100 @@
+table{
+ 	font-size:14px;
+}
+
+/*
+ * table thead,body td,th{
+	text-align: center;
+}
+ */
+selected{
+	background-color: red;
+}
+
+button{
+	margin-right:2px;
+}
+
+/*Modal heaer ��ɫ*/
+.modal-header{
+	background-color: #307095;
+	color: white;
+	font-weight: bold;
+}
+
+/* 溯源商品页面  begin*/
+.trace-scroll{
+	width: 100%;
+	overflow-x: auto;
+}
+.tracing{
+	position: relative;
+	padding: 5px 0;
+	white-space: nowrap;
+	display: inline-block;
+}
+.tracing>li{
+	display: inline-block;
+	margin-bottom: 0px;
+}
+.tracing>li .tr-list{
+	position: relative;
+	text-align: center;
+	padding: 0 5px;
+}
+.tracing>li .tr-list:first-child{
+	padding-bottom: 5px;
+}
+.tracing>li .tr-list:last-child{
+	padding-top: 5px;
+}
+.tracing>li .tr-list .text1{
+    font-size: 1.1em;
+    color: #332c2b;
+    height: 20px;
+}
+.tracing>li .tr-list .text2{
+    font-size: .9em;
+    color: #989898;
+    height: 16px;
+}
+.tracing>li .tr-list .line{
+	position: absolute;
+	left: -3px;
+	right: 0;
+	bottom: 0;
+	border-bottom: dotted 1px #37A17D;
+}
+
+.tracing>li .tr-list .circle{
+	position: absolute;
+	left: 50%;
+	bottom: -4px;
+	margin-left: -4px;
+	width: 8px;
+	height: 8px;
+	background: #37a781;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	-ms-border-radius: 10px;
+	-o-border-radius: 10px;
+}
+.trace-scroll.detail
+{
+	margin: 0;
+	border: 0;
+}
+.detail{
+	margin: 10px 10px 0 10px;
+	border: dotted 1px #c0c0c0;
+	padding: 10px;
+	color: #8b8b8c;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	display: none;
+}
+.detail img{ max-width: 100%;}
+/* 溯源商品页面  end*/
