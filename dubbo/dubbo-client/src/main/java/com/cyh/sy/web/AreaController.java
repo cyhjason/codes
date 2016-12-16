@@ -1,8 +1,11 @@
 package com.cyh.sy.web;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.jms.Destination;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.cyh.sy.entity.Area;
 import com.cyh.sy.entity.bean.QueryCondition;
+import com.cyh.sy.mq.ProducerService;
 import com.cyh.sy.service.IAreaService;
 import com.cyh.sy.web.view.DatatablesView;
 import com.cyh.sy.web.view.MessageView;
@@ -35,6 +39,14 @@ public class AreaController {
 	
 	@Resource
 	private IAreaService areaService;
+	
+	//队列名gzframe.demo
+    @Resource(name="demoQueueDestination")
+    private Destination demoQueueDestination;
+
+    //队列消息生产者
+    @Resource
+    private ProducerService producerService;
 	
 	/**
 	 * 进入国家列表页面
@@ -99,6 +111,14 @@ public class AreaController {
 			info = area.getAreaNameCn() + " 修改成功!";
 			log.info("CCIC-SY系统：国家：" + info);
 		}
+		
+		//消息队列测试
+        System.out.println("给消息队列发送消息!");
+        Date now = new Date(); 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = dateFormat.format( now ); 
+        producerService.sendMessage(demoQueueDestination, time);
+        System.out.println("给消息队列发送消息完成!");
 		
 		MessageView msg = new MessageView(status, info);
 		return JSON.toJSONString(msg);
