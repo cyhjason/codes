@@ -4,6 +4,8 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  
 <mapper namespace="com.cyh.core.dao.Dao">
+	<cache type="com.cyh.sy.redis.RedisCache"/>
+	
     <!-- 局部新增 -->
     <insert id="addLocal">
         ${value}

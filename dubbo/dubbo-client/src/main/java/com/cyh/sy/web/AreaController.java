@@ -41,8 +41,12 @@ public class AreaController {
 	private IAreaService areaService;
 	
 	//队列名gzframe.demo
-    @Resource(name="demoQueueDestination")
-    private Destination demoQueueDestination;
+    @Resource
+    private Destination queueDestination;
+    
+    //队列名gzframe.demo
+    @Resource
+    private Destination topicDestination;
 
     //队列消息生产者
     @Resource
@@ -69,6 +73,15 @@ public class AreaController {
 	@RequestMapping(value="/area/getData", produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public String getData(HttpServletRequest request, QueryCondition query) {
+		//消息队列测试
+        System.out.println("给主题消息队列发送消息!");
+        Date now = new Date(); 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = dateFormat.format( now ); 
+        producerService.sendTopMessage(topicDestination, time+"====");
+        producerService.sendMessage(topicDestination, time+"*****");
+        System.out.println("给主题消息队列发送消息完成!");
+        
 		DatatablesView<Area> dataTable = areaService.getAreaByCondition(query);
 		dataTable.setDraw(query.getDraw());
 		String data = JSON.toJSONString(dataTable);
@@ -117,7 +130,7 @@ public class AreaController {
         Date now = new Date(); 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String time = dateFormat.format( now ); 
-        producerService.sendMessage(demoQueueDestination, time);
+        producerService.sendMessage(queueDestination, time);
         System.out.println("给消息队列发送消息完成!");
 		
 		MessageView msg = new MessageView(status, info);
@@ -133,6 +146,7 @@ public class AreaController {
 	@RequestMapping(value = "/area/del/{id}", method = RequestMethod.DELETE, produces = "text/json;charset=UTF-8")
 	@ResponseBody
 	public String delete(@PathVariable("id") long id, Model model) {
+		
 		int status = areaService.removeArea(id);
 		MessageView msg = new MessageView(status);
 		return JSON.toJSONString(msg);

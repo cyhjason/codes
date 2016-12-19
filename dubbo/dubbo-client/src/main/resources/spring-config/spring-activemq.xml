@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+                        http://www.springframework.org/schema/beans/spring-beans-4.1.xsd  
+                        http://www.springframework.org/schema/context  
+                        http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+        
+    <!-- 启用注解扫描 -->
+	<context:component-scan base-package="com.cyh.*"/>
+	
+	<!-- 配置JMS连接工厂 -->
+	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="failover:(tcp://localhost:61616)" />
+		<property name="userName" value="admin" />
+        <property name="password" value="admin" />
+	</bean>
+	
+	<!-- 定义消息队列（Queue） -->
+	<bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
+		<!-- 设置消息队列的名字 -->
+		<constructor-arg>
+			<value>queueDestination</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- 配置JMS模板（Queue），Spring提供的JMS工具类，它发送、接收消息。 -->
+	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="defaultDestination" ref="queueDestination" />
+		<property name="receiveTimeout" value="10000" />
+	</bean>
+	
+	<!-- 配置消息队列监听者（Queue），代码下面给出，只有一个onMessage方法 -->
+	<bean id="queueMessageListener" class="com.cyh.sy.mq.QueueMessageListener" />
+	
+	<!-- 消息监听容器（Queue），配置连接工厂，监听的队列是queue2，监听器是上面定义的监听器 -->
+	<bean id="jmsContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queueDestination" />
+		<property name="messageListener" ref="queueMessageListener" />
+	</bean>
+	
+	<!-- 消息监听容器（Queue），配置连接工厂，监听的队列是queue2，监听器是上面定义的监听器 -->
+	<!--  
+	<bean id="jmsContainer_3"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queueDestination" />
+		<property name="messageListener" ref="topicMessageListener_1" />
+	</bean>
+	-->
+	
+	
+	<!-- 定义消息主题（Topic） -->
+	<bean id="topicDestination" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg>
+			<value>topicDestination</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- 配置JMS模板（Topic），pubSubDomain="true"-->
+	<bean id="topicJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="defaultDestination" ref="topicDestination" />
+		<property name="pubSubDomain" value="true" />
+		<property name="receiveTimeout" value="10000" />
+	</bean>
+	
+	<!-- 消息主题监听者 和 主题监听容器 可以配置多个，即多个订阅者 -->
+	<!-- 消息主题监听者(Topic) -->
+	<bean id="topicMessageListener_1" class="com.cyh.sy.mq.QueueMessageListener_1" />
+	<bean id="topicMessageListener_2" class="com.cyh.sy.mq.QueueMessageListener_2" />
+	
+	<!-- 主题监听容器 （Topic） -->
+	<bean id="topicJmsContainer_1"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="topicDestination" />
+		<property name="messageListener" ref="topicMessageListener_1" />
+	</bean>
+	
+	<!-- 主题监听容器 （Topic） -->
+	<bean id="topicJmsContainer_2"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="topicDestination" />
+		<property name="messageListener" ref="topicMessageListener_2" />
+	</bean>
+	
+</beans>
