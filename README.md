@@ -1,0 +1,1 @@
+基于Maven构建，框架使用现在主流的：SpringMVC（4.1）+spring（4.1）+MyBatis（3.4.0），实现基本增删改查，页面国际化。数据源采用阿里开源的Druid，前端采用基于Bootstrap封装的模板AdminLTE（2.3.6）及Bootstrap的一些插件。上个周末刚好有时间，将项目进行拆分，集成Dubbo2.5.3+Zookeeper3.4.6，实现服务化。后续逐步将MQ、Reds等进行集成实现服务调用异步解耦、缓存机制等。
